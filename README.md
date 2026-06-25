@@ -23,6 +23,18 @@ A 15-section onboarding report covering: executive summary, system overview, tec
 
 > **Guiding principle:** Don't explain files. Explain the system.
 
+## Showcase: a real run on Spring PetClinic
+
+X-Ray was run against [`spring-projects/spring-petclinic`](https://github.com/spring-projects/spring-petclinic) (commit `b3ee2c5`). Every figure below is derived from the actual repo — no guessing:
+
+- **Architecture:** Layered MVC, package-by-feature — *confidence 90%*.
+- **Evidence-first catch:** there is **no service layer** (`grep @Service` → nothing); controllers inject Spring Data repositories directly. Flagged as an intentional design fact a newcomer will trip on, not a defect.
+- **Bus factor:** High — **169 distinct contributors** across 1,034 commits (`git shortlog`).
+- **Debt:** 0 TODO/FIXME markers, 0 empty catch blocks, no file over ~185 LOC.
+- **Health score:** **92 / 100** (Maintainability: Excellent, Onboarding: Easy, Refactoring risk: Low).
+
+📄 **Read the full report → [examples/spring-petclinic.md](examples/spring-petclinic.md)**
+
 ## Install
 
 Project X-Ray is a standard Claude Code skill — a folder with a `SKILL.md`.
@@ -54,11 +66,12 @@ In Claude Code, point it at a repository and ask for an X-Ray:
 > I just inherited this service. What does it do and where do I start?
 ```
 
-Claude detects the `project-x-ray` skill, runs the six-phase investigation, and produces the report. See [`examples/`](examples/) for full sample outputs on three real-world stacks:
+Claude detects the `project-x-ray` skill, runs the six-phase investigation, and produces the report. See [`examples/`](examples/) for sample outputs:
 
-- [React SPA](examples/react-spa.md)
-- [FastAPI service](examples/fastapi-service.md)
-- [Spring Boot service](examples/spring-boot-service.md)
+- ⭐ [**Spring PetClinic**](examples/spring-petclinic.md) — a **real run** on a live open-source repo (see Showcase above).
+- [React SPA](examples/react-spa.md) — illustrative.
+- [FastAPI service](examples/fastapi-service.md) — illustrative.
+- [Spring Boot service](examples/spring-boot-service.md) — illustrative.
 
 ## How it works
 
