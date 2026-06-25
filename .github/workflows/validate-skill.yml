@@ -1,0 +1,41 @@
+name: Validate Skill
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate skill structure & frontmatter
+        run: python scripts/validate_skill.py
+
+      - name: Check examples follow the report template
+        run: |
+          set -e
+          missing=0
+          for f in examples/*.md; do
+            for section in \
+              "1. Executive Summary" \
+              "4. Architecture Discovery" \
+              "12. Bus Factor Estimation" \
+              "15. Final Verdict"; do
+              if ! grep -qF "$section" "$f"; then
+                echo "::error file=$f::missing section '$section'"
+                missing=1
+              fi
+            done
+          done
+          if [ "$missing" -ne 0 ]; then exit 1; fi
+          echo "All examples contain the required report sections."
