@@ -23,17 +23,23 @@ A 15-section onboarding report covering: executive summary, system overview, tec
 
 > **Guiding principle:** Don't explain files. Explain the system.
 
-## Showcase: a real run on Spring PetClinic
+## Showcase: real runs on real repos
 
-X-Ray was run against [`spring-projects/spring-petclinic`](https://github.com/spring-projects/spring-petclinic) (commit `b3ee2c5`). Every figure below is derived from the actual repo — no guessing:
+Two deliberately contrasting case studies. Both reports are generated **only from evidence** — manifests, import counts, and `git` history — with no guessing. PetClinic proves X-Ray doesn't invent problems on a clean repo; SaltStack proves it surfaces real ones in a large, hard-to-onboard codebase.
 
-- **Architecture:** Layered MVC, package-by-feature — *confidence 90%*.
-- **Evidence-first catch:** there is **no service layer** (`grep @Service` → nothing); controllers inject Spring Data repositories directly. Flagged as an intentional design fact a newcomer will trip on, not a defect.
-- **Bus factor:** High — **169 distinct contributors** across 1,034 commits (`git shortlog`).
-- **Debt:** 0 TODO/FIXME markers, 0 empty catch blocks, no file over ~185 LOC.
-- **Health score:** **92 / 100** (Maintainability: Excellent, Onboarding: Easy, Refactoring risk: Low).
+| | **Case Study #1 — [Spring PetClinic](examples/spring-petclinic.md)** | **Case Study #2 — [SaltStack](examples/saltstack.md)** |
+|---|---|---|
+| Type | Clean reference app (Java/Spring) | Large mature/legacy system (Python) |
+| Size | 30 source files | 963 source files, **125k commits** |
+| **Health Score** | **92 / 100** | **61 / 100** |
+| Maintainability | Excellent | Fair |
+| Onboarding | Easy | **Hard** |
+| Refactoring risk | Low | **High** |
+| What X-Ray detected | No service layer (intentional design — the one newcomer trap); high bus factor (169 contributors); zero debt markers | **God objects** (`vsphere.py` 11,763 LOC; 25 files > 3,000 LOC); **coupling hub** (`salt.utils` imported 2,175×); **high-churn core files**; **single-owner mega-modules** |
 
-📄 **Read the full report → [examples/spring-petclinic.md](examples/spring-petclinic.md)**
+> Note the honesty: on Salt, X-Ray **did not claim circular dependencies** because it couldn't prove them under Salt's dynamic loader — it marked that as a follow-up instead of inventing a finding. That restraint is the whole point.
+
+📄 Full reports: **[PetClinic (clean)](examples/spring-petclinic.md)** · **[SaltStack (messy)](examples/saltstack.md)**
 
 ## Install
 
@@ -68,7 +74,8 @@ In Claude Code, point it at a repository and ask for an X-Ray:
 
 Claude detects the `project-x-ray` skill, runs the six-phase investigation, and produces the report. See [`examples/`](examples/) for sample outputs:
 
-- ⭐ [**Spring PetClinic**](examples/spring-petclinic.md) — a **real run** on a live open-source repo (see Showcase above).
+- ⭐ [**Spring PetClinic**](examples/spring-petclinic.md) — **real run**, clean codebase (health 92).
+- ⭐ [**SaltStack**](examples/saltstack.md) — **real run**, large messy/legacy codebase (health 61).
 - [React SPA](examples/react-spa.md) — illustrative.
 - [FastAPI service](examples/fastapi-service.md) — illustrative.
 - [Spring Boot service](examples/spring-boot-service.md) — illustrative.
